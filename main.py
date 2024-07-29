@@ -86,6 +86,30 @@ async def create_upload_file(file: UploadFile):
     return {"filename": file_location}
 
 
+@app.get("/stt/")
+async def create_upload_file(url: str):
+    client_id = "owkwud0ncz"
+    client_secret = "vzbBnTJpXNDvQ5ZJfTEBCEFNYCAjimSwfkKCnKyL"
+    lang = "Kor"
+    req_url = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=" + lang
+    data = open("./"+url, 'rb')
+
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": client_id,
+        "X-NCP-APIGW-API-KEY": client_secret,
+        "Content-Type": "application/octet-stream"
+    }
+    response = requests.post(req_url,  data=data, headers=headers)
+    rescode = response.status_code
+    if(rescode == 200):
+        print (response.json())
+        result = response.json()
+        return {"response": result["text"]}
+    else:
+        print("Error : " + response.text)
+
+
+
 @app.get("/questions")
 def get_sample_array(req: getContent):
     input_content = parse.unquote(req.content)
