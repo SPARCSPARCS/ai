@@ -1,3 +1,5 @@
 __pycache__
 /files/*.png
 /files/*.mp3
+/files/*.webm
+.DS_Store

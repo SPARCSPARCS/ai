@@ -7,6 +7,7 @@ from pydantic import BaseModel
 import re
 import uuid
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 # import scrapy
 # from scrapy import Spider
@@ -29,6 +30,14 @@ class getUrl(BaseModel):
 
 app = FastAPI()
 app.mount("/files", StaticFiles(directory="files"), name="static")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_url(url):
     get_url_data = requests.get(url)
