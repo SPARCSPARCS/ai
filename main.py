@@ -8,6 +8,11 @@ import re
 import uuid
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from urllib import parse
+import json
+import requests
+
+
 
 # import scrapy
 # from scrapy import Spider
@@ -27,6 +32,9 @@ from fastapi.middleware.cors import CORSMiddleware
 class getUrl(BaseModel):
     url: str
 
+
+class getContent(BaseModel):
+    content: str
 
 app = FastAPI()
 app.mount("/files", StaticFiles(directory="files"), name="static")
@@ -74,4 +82,46 @@ async def create_upload_file(file: UploadFile):
 
     with open(file_location, "wb+") as file_object:
         file_object.write(file.file.read())
+
     return {"filename": file_location}
+
+
+@app.get("/questions")
+def get_sample_array(req: getContent):
+    input_content = parse.unquote(req.content)
+    
+    preset_text = [
+        {
+            "role":"system",
+            "content":"너는 채용담당자야. 사용자가 채용 공고 링크를 보내면 그에 맞는 면접 질문을 배열 형태로 출력하는 역할이야. 한국어로 답변하고 엄격한 언어로 길게 답변해. 그리고 각 질문마다 \"||\" 를 구분자로 사용해."
+        },
+        {
+            "role":"user",
+            "content":"{0} 해당 채용 공고를 분석해서 채용공고의 예상 면접 질문을 5개 생성하고 각 질문마다 \"||\" 를 구분자로 사용해. 질문은 총 5개고 추가적인 설명이나 타이틀 또는 번호 없이 면접 질문만 출력해".format(input_content)
+        }
+    ]
+
+    request_data = {
+        'messages': preset_text,
+        'topP': 0.8,
+        'topK': 0,
+        'maxTokens': 256,
+        'temperature': 0.5,
+        'repeatPenalty': 5.0,
+        'stopBefore': [],
+        'includeAiFilters': True,
+        'seed': 0
+    }
+
+    headers = {
+        'X-NCP-CLOVASTUDIO-API-KEY': 'NTA0MjU2MWZlZTcxNDJiY71zbl8q71f1sERnVRwzt+RZzWbe5i+VpjnKxSOpoXuV',
+        'X-NCP-APIGW-API-KEY': 'f2BmL2UpjJAx756MSQAJpXfO5wE2kcoPchgK8mfE',
+        'X-NCP-CLOVASTUDIO-REQUEST-ID': '88ffa858-ad67-4e88-80c2-bc9df748de28',
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+
+
+    response = requests.post('https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003', headers=headers, json=request_data, stream=False)
+    result = response.json()
+
+    return {"result": result["result"]["message"]["content"].split("||") }
