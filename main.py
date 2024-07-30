@@ -68,9 +68,9 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/test/url")
-def read_url(req: getUrl):
+def read_url(url: str):
 
-    content = get_url(req.url)
+    content = get_url(url)
     return {"content": content }
 
 
@@ -110,7 +110,7 @@ async def create_upload_file(url: str):
 
 
 
-@app.get("/questions")
+@app.post("/questions")
 def get_sample_array(req: getContent):
     input_content = parse.unquote(req.content)
     
