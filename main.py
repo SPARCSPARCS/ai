@@ -110,6 +110,26 @@ async def create_upload_file(url: str):
 
 
 
+@app.get("/news/")
+def get_news(query: str):
+    req_url = "https://openapi.naver.com/v1/search/news.json?query={0}&sort=sim".format(query)
+
+    headers = {
+        "X-Naver-Client-Id": "4X7DdLAk2Xw6_04BvJI5",
+        "X-Naver-Client-Secret": "4qTdoDCMM6",
+    }
+
+    response = requests.get(req_url, headers=headers)
+    rescode = response.status_code
+    if(rescode == 200):
+        print (response.json())
+        result = response.json()
+        return {"response": result["items"]}
+    else:
+        print("Error : " + response.text)
+
+
+
 @app.post("/questions")
 def get_sample_array(req: getContent):
     input_content = parse.unquote(req.content)
@@ -139,7 +159,7 @@ def get_sample_array(req: getContent):
 
     headers = {
         'X-NCP-CLOVASTUDIO-API-KEY': 'NTA0MjU2MWZlZTcxNDJiY71zbl8q71f1sERnVRwzt+RZzWbe5i+VpjnKxSOpoXuV',
-        'X-NCP-APIGW-API-KEY': 'f2BmL2UpjJAx756MSQAJpXfO5wE2kcoPchgK8mfE',
+        'X-NCP-APIGW-API-KEY': 'UDVKcQUFxEzQ5JnZdVZfrGw9pIcljFyiWz7y9rKg',
         'X-NCP-CLOVASTUDIO-REQUEST-ID': '88ffa858-ad67-4e88-80c2-bc9df748de28',
         'Content-Type': 'application/json; charset=utf-8',
     }
