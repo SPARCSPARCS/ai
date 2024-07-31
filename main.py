@@ -12,24 +12,13 @@ from urllib import parse
 import json
 import requests
 import random
+from dotenv import load_dotenv
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
-
-
-# import scrapy
-# from scrapy import Spider
-# from scrapy.crawler import CrawlerProcess
-
-
-# class UrlSpider(Spider):
-#     name = "url"
-
-#     def start_requests(self):
-#         yield scrapy.Request(global_url, self.parse_start)
-
-#     def parse_start(self, response):
-#         print(response.body)
-#         return response.body
 
 class getUrl(BaseModel):
     url: str
@@ -90,8 +79,8 @@ async def create_upload_file(file: UploadFile):
 
 @app.get("/stt/")
 async def create_upload_file(url: str):
-    client_id = "owkwud0ncz"
-    client_secret = "vzbBnTJpXNDvQ5ZJfTEBCEFNYCAjimSwfkKCnKyL"
+    client_id = os.environ["NAVER_API_CID"]
+    client_secret =os.environ[" NAVER_API_CSR"]
     lang = "Kor"
     req_url = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=" + lang
     data = open("./"+url, 'rb')
@@ -118,8 +107,8 @@ def get_news(query: str):
     req_url = "https://openapi.naver.com/v1/search/news.json?query={0}&sort=sim&start={1}".format(query, random_number)
 
     headers = {
-        "X-Naver-Client-Id": "4X7DdLAk2Xw6_04BvJI5",
-        "X-Naver-Client-Secret": "4qTdoDCMM6",
+        "X-Naver-Client-Id": os.environ["NAVER_NEWS_API_CID"],
+        "X-Naver-Client-Secret": os.environ["NAVER_NEWS_API_CSR"]
     }
 
     response = requests.get(req_url, headers=headers)
@@ -161,9 +150,9 @@ def get_sample_array(req: getContent):
     }
 
     headers = {
-        'X-NCP-CLOVASTUDIO-API-KEY': 'NTA0MjU2MWZlZTcxNDJiY71zbl8q71f1sERnVRwzt+RZzWbe5i+VpjnKxSOpoXuV',
-        'X-NCP-APIGW-API-KEY': 'UDVKcQUFxEzQ5JnZdVZfrGw9pIcljFyiWz7y9rKg',
-        'X-NCP-CLOVASTUDIO-REQUEST-ID': '88ffa858-ad67-4e88-80c2-bc9df748de28',
+        'X-NCP-CLOVASTUDIO-API-KEY': os.environ["NAVER_CLOVASTUDIO_KEY"],
+        'X-NCP-APIGW-API-KEY': os.environ["NAVER_CLOVASTUDIO_APIGW_KEY"],
+        'X-NCP-CLOVASTUDIO-REQUEST-ID': os.environ["NAVER_CLOVASTUDIO_REQUESTID"],
         'Content-Type': 'application/json; charset=utf-8',
     }
 
