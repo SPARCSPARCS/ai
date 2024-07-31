@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from urllib import parse
 import json
 import requests
+import random
+
 
 
 
@@ -112,7 +114,8 @@ async def create_upload_file(url: str):
 
 @app.get("/news/")
 def get_news(query: str):
-    req_url = "https://openapi.naver.com/v1/search/news.json?query={0}&sort=sim".format(query)
+    random_number = random.randint(1, 10)
+    req_url = "https://openapi.naver.com/v1/search/news.json?query={0}&sort=sim&start={1}".format(query, random_number)
 
     headers = {
         "X-Naver-Client-Id": "4X7DdLAk2Xw6_04BvJI5",
